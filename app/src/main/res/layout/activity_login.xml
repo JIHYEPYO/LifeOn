@@ -1,10 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorPrimary">
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textViewPersonalProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="Personal Profile"
+        android:textSize="30dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewPersonalProfile"
+        android:layout_marginBottom="@dimen/activity_login_margin_horizontal"
+        android:layout_marginLeft="@dimen/activity_login_margin"
+        android:layout_marginTop="60dp"
+        android:text="Name : "
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/textViewName"
+        android:layout_margin="@dimen/activity_login_margin"
+        android:layout_toRightOf="@+id/textViewName"
+        android:hint="Hong Gil Dong" />
+
+    <TextView
+        android:id="@+id/textViewEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewName"
+        android:layout_marginBottom="@dimen/activity_login_margin_horizontal"
+        android:layout_marginLeft="@dimen/activity_login_margin"
+        android:layout_marginTop="40dp"
+        android:text="Email : "
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/textViewEmail"
+        android:layout_margin="@dimen/activity_login_margin"
+        android:layout_toRightOf="@+id/textViewEmail"
+        android:hint="gildonghong@gmail.com"
+        android:inputType="textEmailAddress"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/textViewHeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEmail"
+        android:layout_marginBottom="@dimen/activity_login_margin_horizontal"
+        android:layout_marginLeft="@dimen/activity_login_margin"
+        android:layout_marginTop="40dp"
+        android:text="Height : "
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/editTextHeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/textViewHeight"
+        android:layout_margin="@dimen/activity_login_margin"
+        android:layout_toRightOf="@+id/textViewHeight"
+        android:ems="3"
+        android:hint="173"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/textViewWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewHeight"
+        android:layout_marginBottom="@dimen/activity_login_margin_horizontal"
+        android:layout_marginLeft="@dimen/activity_login_margin"
+        android:layout_marginTop="40dp"
+        android:text="Weight : "
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/editTextWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/textViewWeight"
+        android:layout_margin="@dimen/activity_login_margin"
+        android:layout_toRightOf="@+id/textViewWeight"
+        android:ems="3"
+        android:hint="65"
+        android:inputType="number" />
 
 
-
-</LinearLayout>
+    <Button
+        android:id="@+id/buttonSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="Submit" />
+</RelativeLayout>

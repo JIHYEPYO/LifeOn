@@ -24,10 +24,11 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="PYO JIHYE"
+        android:id="@+id/textViewNavName"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewNavEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="pyojihye95@gmail.com" />
