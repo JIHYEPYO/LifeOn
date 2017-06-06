@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="Name : "
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editTextPersonName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewName"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_toRightOf="@+id/textViewName"
+        android:ems="10"
+        android:hint="Hong Gil Dong"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/textViewPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewName"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="Phone : "
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editTextPersonPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewPhone"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_toRightOf="@+id/textViewPhone"
+        android:ems="10"
+        android:hint="01012345678"
+        android:inputType="phone" />
+
+    <Button
+        android:id="@+id/buttonPhoneRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/editTextPersonPhone"
+        android:layout_below="@id/editTextPersonPhone"
+        android:text="Register" />
+
+    <ListView
+        android:id="@+id/ListViewPhone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/buttonPhoneRegister" />
+
+</RelativeLayout>

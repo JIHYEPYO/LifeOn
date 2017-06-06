@@ -1,6 +1,7 @@
 package com.example.ncs.lifeon.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +12,7 @@ import android.widget.Toast;
 
 import com.example.ncs.lifeon.R;
 
-import static com.example.ncs.lifeon.Const.email;
-import static com.example.ncs.lifeon.Const.height;
-import static com.example.ncs.lifeon.Const.name;
-import static com.example.ncs.lifeon.Const.weight;
+import static com.example.ncs.lifeon.ECT.Const.FIRSTRUN;
 
 /**
  * Created by NCS on 2017-06-05.
@@ -44,10 +42,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!editTextName.getText().toString().equals("") && !editTextEmail.getText().toString().equals("") &&
                         !editTextHeight.getText().toString().equals("") && !editTextWeight.getText().toString().equals("")) {
-                    name = editTextName.getText().toString();
-                    email = editTextEmail.getText().toString();
-                    height = Integer.parseInt(editTextHeight.getText().toString());
-                    weight = Integer.parseInt(editTextWeight.getText().toString());
+                    final SharedPreferences settings = getSharedPreferences(FIRSTRUN, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("name", editTextName.getText().toString());
+                    editor.putString("email", editTextEmail.getText().toString());
+                    editor.putInt("height", Integer.parseInt(editTextHeight.getText().toString()));
+                    editor.putInt("weight", Integer.parseInt(editTextWeight.getText().toString()));
+                    editor.commit();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

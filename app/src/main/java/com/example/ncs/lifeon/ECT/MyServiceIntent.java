@@ -1,4 +1,4 @@
-package com.example.ncs.lifeon.Fragment;
+package com.example.ncs.lifeon.ECT;
 
 import android.app.Service;
 import android.content.Intent;
@@ -9,8 +9,8 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.util.Log;
 
-import static com.example.ncs.lifeon.Const.intentFilterStep;
-import static com.example.ncs.lifeon.Const.step;
+import static com.example.ncs.lifeon.ECT.Const.intentFilterStep;
+import static com.example.ncs.lifeon.ECT.Const.step;
 
 /**
  * Created by PYOJIHYE on 2017-06-06.

@@ -1,18 +1,21 @@
 package com.example.ncs.lifeon.Activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ncs.lifeon.Fragment.CalendarFragment;
 import com.example.ncs.lifeon.Fragment.ExerciseFragment;
@@ -22,12 +25,11 @@ import com.example.ncs.lifeon.Fragment.RegisterFragment;
 import com.example.ncs.lifeon.Fragment.SettingFragment;
 import com.example.ncs.lifeon.R;
 
-import static com.example.ncs.lifeon.Const.email;
-import static com.example.ncs.lifeon.Const.name;
+import static com.example.ncs.lifeon.ECT.Const.FIRSTRUN;
+import static com.example.ncs.lifeon.ECT.Const.name;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,29 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(com.example.ncs.lifeon.R.id.nav_view);
         View viewNavigation = navigationView.getHeaderView(0);
+        ImageView imageView = (ImageView) viewNavigation.findViewById(R.id.imageView);
         TextView textViewNavName = (TextView) viewNavigation.findViewById(R.id.textViewNavName);
         TextView textViewNavEmail = (TextView) viewNavigation.findViewById(R.id.textViewNavEmail);
-        textViewNavName.setText(name);
-        textViewNavEmail.setText(email);
+
+        final SharedPreferences settings = getSharedPreferences(FIRSTRUN, MODE_PRIVATE);
+
+        textViewNavName.setText(settings.getString("name", "null"));
+        name = textViewNavName.getText().toString();
+        textViewNavEmail.setText(settings.getString("email", "null@null.com"));
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final SharedPreferences settings = getSharedPreferences(FIRSTRUN, MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean("isFirstRun", true);
+                editor.commit();
+
+                Toast.makeText(MainActivity.this, "You have been signed out.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         navigationView.setNavigationItemSelectedListener(this);
     }
 

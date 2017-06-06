@@ -56,7 +56,7 @@
             android:id="@+id/textViewKm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Km"
+            android:text="m"
             android:textSize="30dp" />
 
         <TextView
