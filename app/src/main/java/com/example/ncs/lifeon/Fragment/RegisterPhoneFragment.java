@@ -47,10 +47,10 @@ public class RegisterPhoneFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_phone, container, false);
 
-        editTextPersonName =(EditText)view.findViewById(R.id.editTextPersonName);
-        editTextPersonPhone =(EditText)view.findViewById(R.id.editTextPersonPhone);
+        editTextPersonName = (EditText) view.findViewById(R.id.editTextPersonName);
+        editTextPersonPhone = (EditText) view.findViewById(R.id.editTextPersonPhone);
         listView = (ListView) view.findViewById(R.id.ListViewPhone);
-        buttonRegister = (Button)view.findViewById(R.id.buttonPhoneRegister);
+        buttonRegister = (Button) view.findViewById(R.id.buttonPhoneRegister);
 
         dbController = new DatabasePhoneController(getContext());
         db = dbController.getWritableDatabase();
@@ -78,8 +78,8 @@ public class RegisterPhoneFragment extends Fragment {
                 String person = editTextPersonName.getText().toString();
                 String phone = editTextPersonPhone.getText().toString();
 
-                if(!person.equals("") && !phone.equals(""))
-                db.execSQL("INSERT INTO "+TABLE_NAME_PHONE+" VALUES (null, '" + name + "', '" + person + "', '" + phone + "');");
+                if (!person.equals("") && !phone.equals(""))
+                    db.execSQL("INSERT INTO " + TABLE_NAME_PHONE + " VALUES (null, '" + name + "', '" + person + "', '" + phone + "');");
 
                 editTextPersonName.setText("");
                 editTextPersonPhone.setText("");
@@ -92,7 +92,7 @@ public class RegisterPhoneFragment extends Fragment {
 
     public void DatabaseReset() {
         try {
-            String query = "SELECT * FROM " + TABLE_NAME_PHONE + ";";
+            String query = "SELECT * FROM " + TABLE_NAME_PHONE + " WHERE name = '" + name + "';";
             Cursor cursor = db.rawQuery(query, null);
             ArrayList<DatabasePhone> arrayList = new ArrayList<DatabasePhone>();
             arrayList.clear();

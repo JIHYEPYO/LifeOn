@@ -1,6 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/textViewExerciseSchedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_setting"
+            android:text="Exercise schedule"
+            android:textSize="20dp" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonExerciseSchedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textViewExerciseSchedule"
+            android:layout_toRightOf="@+id/textViewExerciseSchedule" />
+
+        <TextView
+            android:id="@+id/textViewSendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewExerciseSchedule"
+            android:layout_margin="@dimen/activity_setting"
+            android:text="Send Message"
+            android:textSize="20dp" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonSendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textViewSendMessage"
+            android:layout_alignBottom="@+id/textViewSendMessage"
+            android:layout_alignLeft="@+id/toggleButtonExerciseSchedule"
+            android:layout_alignStart="@+id/toggleButtonExerciseSchedule" />
+
+        <TextView
+            android:id="@+id/textViewIdentifyActivities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewSendMessage"
+            android:layout_margin="@dimen/activity_setting"
+            android:text="Identify activities"
+            android:textSize="20dp" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonIdentifyActivities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textViewIdentifyActivities"
+            android:layout_alignBottom="@+id/textViewIdentifyActivities"
+            android:layout_alignLeft="@+id/toggleButtonSendMessage"
+            android:layout_alignStart="@+id/toggleButtonSendMessage" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

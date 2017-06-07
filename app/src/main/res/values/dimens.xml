@@ -8,4 +8,6 @@
     <dimen name="activity_login_margin_horizontal">10dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="activity_setting">30dp</dimen>
+    <dimen name="activity_exercise">40dp</dimen>
 </resources>

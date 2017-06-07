@@ -20,6 +20,7 @@ import com.example.ncs.lifeon.R;
 import java.util.ArrayList;
 
 import static com.example.ncs.lifeon.ECT.Const.TABLE_NAME_GPS;
+import static com.example.ncs.lifeon.ECT.Const.name;
 
 /**
  * Created by PYOJIHYE on 2017-06-06.
@@ -38,6 +39,11 @@ public class RegisterGPSFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_gps, container, false);
+
+        if(view !=null){
+            view.setEnabled(false);
+            view.setSaveFromParentEnabled(false);
+        }
 
         listView = (ListView) view.findViewById(R.id.ListViewGPS);
 
@@ -65,7 +71,7 @@ public class RegisterGPSFragment extends Fragment {
 
     public void DatabaseReset() {
         try {
-            String query = "SELECT * FROM " + TABLE_NAME_GPS + ";";
+            String query = "SELECT * FROM " + TABLE_NAME_GPS + " WHERE name='" + name + "';";
             Cursor cursor = db.rawQuery(query, null);
             ArrayList<DatabaseGPS> arrayList = new ArrayList<DatabaseGPS>();
             arrayList.clear();

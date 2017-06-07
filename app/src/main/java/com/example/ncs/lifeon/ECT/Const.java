@@ -3,6 +3,10 @@ package com.example.ncs.lifeon.ECT;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.example.ncs.lifeon.Fragment.RegisterGPSFragment;
+import com.example.ncs.lifeon.Fragment.RegisterPhoneFragment;
+import com.example.ncs.lifeon.Fragment.RegisterTimeFragment;
+
 /**
  * Created by PYOJIHYE on 2017-06-06.
  */

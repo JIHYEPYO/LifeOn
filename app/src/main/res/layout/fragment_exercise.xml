@@ -1,6 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_exercise"
+        android:layout_marginLeft="@dimen/activity_exercise"
+        android:layout_marginRight="@dimen/activity_exercise"
+        android:layout_marginTop="120dp"
+        android:text="DATE : "
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewCurDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewDate"
+        android:layout_toRightOf="@+id/textViewDate"
+        android:text="2017.06.22"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/textViewExerciseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewDate"
+        android:layout_marginLeft="@dimen/activity_exercise"
+        android:text="Exercise name : "
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editViewCurExerciseName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewExerciseName"
+        android:layout_marginLeft="@dimen/activity_exercise"
+        android:layout_marginRight="@dimen/activity_exercise"
+        android:hint="Running" />
+
+    <TextView
+        android:id="@+id/textViewExerciseTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editViewCurExerciseName"
+        android:layout_margin="@dimen/activity_exercise"
+        android:text="Exercise Time : "
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewExerciseTime"
+        android:layout_marginRight="@dimen/activity_exercise"
+        android:layout_toRightOf="@+id/textViewExerciseTime"
+        android:hint="5 (min)" />
+
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/activity_exercise"
+        android:text="Start" />
+</RelativeLayout>

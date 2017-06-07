@@ -1,6 +1,8 @@
 package com.example.ncs.lifeon.Fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -53,7 +55,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.ncs.lifeon.ECT.Const.DEFAULT_ZOOM_LEVEL;
+import static com.example.ncs.lifeon.ECT.Const.FIRSTRUN;
 import static com.example.ncs.lifeon.ECT.Const.MY_PERMISSIONS_REQUEST_LOCATION;
 import static com.example.ncs.lifeon.ECT.Const.TABLE_NAME_GPS;
 import static com.example.ncs.lifeon.ECT.Const.TIME;
@@ -78,22 +82,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     DatabaseGPSController dbController;
     SQLiteDatabase db;
+    SharedPreferences settings;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        checkLocationPermission();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
-
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(map);
         mapFragment.getMapAsync(this);
+
+        settings = this.getActivity().getSharedPreferences(FIRSTRUN, MODE_PRIVATE);
 
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, false);
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
         location = locationManager.getLastKnownLocation(provider);
 
         arrayPoints = new ArrayList<LatLng>();
@@ -156,12 +169,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     protected void Update() {
         Runnable updater = new Runnable() {
             public void run() {
-                if (latLng == null) {
-                    latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    drawPolyLineOnMap(arrayPoints);
-                } else if (!latLng.equals(new LatLng(location.getLatitude(), location.getLongitude()))) {
-                    latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    drawPolyLineOnMap(arrayPoints);
+                if(settings.getBoolean("IdentifyActivity",true)){
+                    if (latLng == null) {
+                        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        drawPolyLineOnMap(arrayPoints);
+                    } else if (!latLng.equals(new LatLng(location.getLatitude(), location.getLongitude()))) {
+                        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        drawPolyLineOnMap(arrayPoints);
+                    }
                 }
             }
         };

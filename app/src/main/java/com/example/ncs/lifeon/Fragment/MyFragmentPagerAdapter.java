@@ -41,7 +41,6 @@ public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-
         switch (position) {
             case 0:
                 return "GPS";
