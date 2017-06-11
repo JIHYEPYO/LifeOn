@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.ncs.lifeon.Fragment.CalendarFragment;
 import com.example.ncs.lifeon.Fragment.ExerciseFragment;
+import com.example.ncs.lifeon.Fragment.ExerciseMelodyFragment;
 import com.example.ncs.lifeon.Fragment.MapFragment;
 import com.example.ncs.lifeon.Fragment.PedometerFragment;
 import com.example.ncs.lifeon.Fragment.RegisterFragment;

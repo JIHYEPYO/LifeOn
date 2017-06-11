@@ -4,19 +4,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.example.ncs.lifeon.ECT.GifView
+        android:id="@+id/gifView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/textViewTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/gifView"
         android:background="@color/colorAccent"
         android:gravity="center"
         android:text="00:00:00"
         android:textColor="@color/colorWhite"
         android:textSize="60dp" />
 
+    <TextView
+        android:id="@+id/textViewCurExerciseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTimer"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:textSize="20dp" />
+
     <Button
-        android:id="@+id/buttonPause"
+        android:id="@+id/buttonExercisePause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -27,7 +42,7 @@
         android:textSize="20dp" />
 
     <Button
-        android:id="@+id/buttonCancel"
+        android:id="@+id/buttonExerciseCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -16,6 +16,9 @@ public class Const {
     public static int step;
     public static int TIME=5000;
 
+    public static String curExerciseName;
+    public static String curExerciseTime;
+
     public static LocationManager locationManager;
     public static Location location;
 
@@ -24,6 +27,7 @@ public class Const {
     public static final String TABLE_NAME_STEP = "step";
     public static final String TABLE_NAME_GPS = "gps";
     public static final String TABLE_NAME_PHONE = "phone";
+    public static final String TABLE_NAME_EXERCISE = "exercise";
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
     public static final int DEFAULT_ZOOM_LEVEL = 18;

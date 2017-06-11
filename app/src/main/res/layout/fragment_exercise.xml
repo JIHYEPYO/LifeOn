@@ -55,9 +55,11 @@
         android:textStyle="bold" />
 
     <EditText
+        android:id="@+id/editViewCurExerciseTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textViewExerciseTime"
+        android:inputType="number"
         android:layout_marginRight="@dimen/activity_exercise"
         android:layout_toRightOf="@+id/textViewExerciseTime"
         android:hint="5 (min)" />
