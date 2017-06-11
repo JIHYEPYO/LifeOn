@@ -1,18 +1,15 @@
 package com.example.ncs.lifeon.Fragment;
 
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.example.ncs.lifeon.ECT.DatabaseStepController;
 import com.example.ncs.lifeon.R;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -91,7 +88,7 @@ public class SettingFragment extends Fragment {
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putBoolean("IdentifyActivity", false);
                     editor.commit();
-                    Toast.makeText(getActivity(), "Activity identification is cancel.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Activity identification is cancel. If this Button Off, Message Send is Off, too.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

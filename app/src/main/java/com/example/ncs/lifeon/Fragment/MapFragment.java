@@ -1,71 +1,67 @@
 package com.example.ncs.lifeon.Fragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.location.Criteria;
-import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ncs.lifeon.Activity.MainActivity;
 import com.example.ncs.lifeon.ECT.DatabaseGPSController;
-import com.example.ncs.lifeon.Manifest;
+import com.example.ncs.lifeon.ECT.DatabasePhone;
 import com.example.ncs.lifeon.R;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.ncs.lifeon.ECT.Const.DEFAULT_ZOOM_LEVEL;
 import static com.example.ncs.lifeon.ECT.Const.FIRSTRUN;
 import static com.example.ncs.lifeon.ECT.Const.MY_PERMISSIONS_REQUEST_LOCATION;
+import static com.example.ncs.lifeon.ECT.Const.MY_PERMISSIONS_REQUEST_SEND_SMS;
 import static com.example.ncs.lifeon.ECT.Const.TABLE_NAME_GPS;
+import static com.example.ncs.lifeon.ECT.Const.TABLE_NAME_PHONE;
 import static com.example.ncs.lifeon.ECT.Const.TIME;
+import static com.example.ncs.lifeon.ECT.Const.latLng;
 import static com.example.ncs.lifeon.ECT.Const.location;
 import static com.example.ncs.lifeon.ECT.Const.locationManager;
 import static com.example.ncs.lifeon.ECT.Const.name;
+import static com.example.ncs.lifeon.ECT.Const.smsText;
 import static com.example.ncs.lifeon.R.id.map;
-import static com.google.android.gms.plus.PlusOneDummyView.TAG;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
@@ -74,15 +70,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     SupportMapFragment mapFragment;
 
     private TimerTask second;
-    private LatLng latLng;
     private final Handler handler = new Handler();
     int timer_sec;
     private PolylineOptions polylineOptions;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+         requestPermisson();
+    }
+
     private ArrayList<LatLng> arrayPoints;
 
     DatabaseGPSController dbController;
     SQLiteDatabase db;
     SharedPreferences settings;
+    AsyncTaskCancelTimerTask timerTask;
+    AsyncTask task;
 
     @Override
     public void onAttach(Context context) {
@@ -118,7 +122,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         } catch (SQLiteException e) {
             db = dbController.getReadableDatabase();
         }
-
         return view;
     }
 
@@ -169,13 +172,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     protected void Update() {
         Runnable updater = new Runnable() {
             public void run() {
-                if(settings.getBoolean("IdentifyActivity",true)){
+                if (settings.getBoolean("IdentifyActivity", true)) {
                     if (latLng == null) {
                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        timerTask = new AsyncTaskCancelTimerTask(task, Integer.parseInt(settings.getString("timeRegister", "5000")), 1000, true);
                         drawPolyLineOnMap(arrayPoints);
                     } else if (!latLng.equals(new LatLng(location.getLatitude(), location.getLongitude()))) {
                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        timerTask = new AsyncTaskCancelTimerTask(task, Integer.parseInt(settings.getString("timeRegister", "50000")), Integer.parseInt(settings.getString("timeRegister", "5000")), true);
                         drawPolyLineOnMap(arrayPoints);
+                    } else if (latLng.equals(new LatLng(location.getLatitude(), location.getLongitude()))) {
+                        if (settings.getBoolean("SendMessage", true)) {
+                            if (latLng.equals(new LatLng(location.getLatitude(), location.getLongitude()))) {
+                                try {
+                                    String query = "SELECT * FROM " + TABLE_NAME_PHONE + " WHERE name = '" + name + "';";
+                                    Cursor cursor = db.rawQuery(query, null);
+                                    while (cursor.moveToNext()) {
+                                        DatabasePhone database = new DatabasePhone();
+                                        String name = cursor.getString(cursor.getColumnIndex("name"));
+                                        String personName = cursor.getString(cursor.getColumnIndex("personName"));
+                                        String personPhone = cursor.getString(cursor.getColumnIndex("personPhone"));
+
+                                        database.setName(name);
+                                        database.setPersonName(personName);
+                                        database.setPersonPhone(personPhone);
+
+                                        Toast.makeText(getActivity(),personPhone+"",Toast.LENGTH_SHORT).show();
+                                        sendSMS(personPhone);
+                                    }
+                                    cursor.close();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -222,5 +252,107 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         });
         alertDialog.show();
+    }
+
+    public void requestPermisson() {
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+        }
+    }
+
+    public void sendSMS(String smsNumber) {
+        PendingIntent sentIntent = PendingIntent.getBroadcast(getActivity(), 0, new Intent("SMS_SENT_ACTION"), 0);
+        PendingIntent deliveredIntent = PendingIntent.getBroadcast(getActivity(), 0, new Intent("SMS_DELIVERED_ACTION"), 0);
+
+        getActivity().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getContext(), "Send!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getContext(), "Send Error", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getContext(), "No Service Area", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getContext(), "Radio Off", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getContext(), "PDU Null", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_SENT_ACTION"));
+
+        getActivity().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getContext(), "SMS Send Success!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getContext(), "SMS Send Failed", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_DELIVERED_ACTION"));
+
+        SmsManager mSmsManager = SmsManager.getDefault();
+        mSmsManager.sendTextMessage(smsNumber, null, smsText + name + "'s location : " + latLng.latitude + ", " + latLng.longitude, sentIntent, deliveredIntent);
+    }
+
+    static class AsyncTaskCancelTimerTask extends CountDownTimer {
+        private AsyncTask asyncTask;
+        private boolean interrupt;
+
+        private AsyncTaskCancelTimerTask(AsyncTask asyncTask, long startTime, long interval) {
+            super(startTime, interval);
+            this.asyncTask = asyncTask;
+        }
+
+        private AsyncTaskCancelTimerTask(AsyncTask asyncTask, long startTime, long interval, boolean interrupt) {
+            super(startTime, interval);
+            this.asyncTask = asyncTask;
+            this.interrupt = interrupt;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (asyncTask == null) {
+                this.cancel();
+                return;
+            }
+
+            if (asyncTask.isCancelled())
+                this.cancel();
+
+            if (asyncTask.getStatus() == AsyncTask.Status.FINISHED)
+                this.cancel();
+        }
+
+        @Override
+        public void onFinish() {
+            if (asyncTask == null || asyncTask.isCancelled())
+                return;
+
+            try {
+                if (asyncTask.getStatus() == AsyncTask.Status.FINISHED)
+                    return;
+
+                if (asyncTask.getStatus() == AsyncTask.Status.PENDING || asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    asyncTask.cancel(interrupt);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

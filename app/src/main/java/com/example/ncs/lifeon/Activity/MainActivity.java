@@ -17,9 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ncs.lifeon.Fragment.CalendarFragment;
 import com.example.ncs.lifeon.Fragment.ExerciseFragment;
-import com.example.ncs.lifeon.Fragment.ExerciseMelodyFragment;
 import com.example.ncs.lifeon.Fragment.MapFragment;
 import com.example.ncs.lifeon.Fragment.PedometerFragment;
 import com.example.ncs.lifeon.Fragment.RegisterFragment;
@@ -102,9 +100,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_exercise) {
             fragment = new ExerciseFragment();
             title = "Exercise";
-        } else if (id == R.id.nav_calendar) {
-            fragment = new CalendarFragment();
-            title = "Calendar";
         } else if (id == R.id.nav_map) {
             fragment = new MapFragment();
             title = "Map";

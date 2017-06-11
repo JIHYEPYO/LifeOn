@@ -2,15 +2,16 @@ package com.example.ncs.lifeon.Fragment;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.media.RingtoneManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,14 @@ import com.example.ncs.lifeon.R;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.ncs.lifeon.ECT.Const.FIRSTRUN;
 import static com.example.ncs.lifeon.ECT.Const.TABLE_NAME_EXERCISE;
 import static com.example.ncs.lifeon.ECT.Const.curExerciseName;
 import static com.example.ncs.lifeon.ECT.Const.curExerciseTime;
+import static com.example.ncs.lifeon.ECT.Const.melody;
 import static com.example.ncs.lifeon.ECT.Const.name;
+import static com.example.ncs.lifeon.ECT.Const.r;
 
 /**
  * Created by PYOJIHYE on 2017-06-07.
@@ -52,6 +57,7 @@ public class ExerciseMelodyFragment extends Fragment {
     Timer timer;
 
     ProgressDialog dialog;
+    SharedPreferences settings;
 
     @Override
     public void onDestroy() {
@@ -126,13 +132,11 @@ public class ExerciseMelodyFragment extends Fragment {
             if (!flagPause) {
                 if (buttonPause.getText().toString().equals("Restart")) {
                     buttonPause.setText("Pause");
-                } else if (millisTime == 600000) { //10분
+                } else if (millisTime == 60000) { //10분
                     handler.sendEmptyMessage(1);
-                    handler.postDelayed(mRunnable, 6000);
                     Toast.makeText(getActivity(), "Ten minutes left.", Toast.LENGTH_SHORT).show();
                 } else if (millisTime == 30000) { //5분
                     handler.sendEmptyMessage(1);
-                    handler.postDelayed(mRunnable, 6000);
                     Toast.makeText(getActivity(), "Five minutes left.", Toast.LENGTH_SHORT).show();
                 } else if (millisTime == 0) {     //타임아웃
                     handler.sendEmptyMessage(1);
@@ -190,11 +194,21 @@ public class ExerciseMelodyFragment extends Fragment {
                     fragmentTransaction.commit();
                     break;
                 case 1:
+                    settings = getActivity().getSharedPreferences(FIRSTRUN, MODE_PRIVATE);
+
                     dialog = new ProgressDialog(getActivity());
+                    if(settings.getBoolean("ExerciseSchedule", true)){
+                        try {
+                            melody = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+                            r = RingtoneManager.getRingtone(getActivity(), melody);
+                            r.play();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                     dialog.setMessage("Do you want to close this window ?");
                     dialog.setCancelable(false);
-//                    dialog.
                     dialog.setButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -211,6 +225,11 @@ public class ExerciseMelodyFragment extends Fragment {
         @Override
         public void run() {
             if (dialog != null && dialog.isShowing()) {
+                try {
+                    r.stop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 dialog.dismiss();
             }
         }
