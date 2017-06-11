@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.location.Criteria;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,8 +35,10 @@ import android.widget.Toast;
 
 import com.example.ncs.lifeon.ECT.DatabaseGPSController;
 import com.example.ncs.lifeon.ECT.DatabasePhone;
+import com.example.ncs.lifeon.ECT.DatabasePhoneController;
 import com.example.ncs.lifeon.R;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -75,24 +78,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private PolylineOptions polylineOptions;
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        requestPermisson();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-         requestPermisson();
+        checkLocationPermission();
     }
 
     private ArrayList<LatLng> arrayPoints;
 
     DatabaseGPSController dbController;
+    DatabasePhoneController dbController2;
     SQLiteDatabase db;
+    SQLiteDatabase db2;
     SharedPreferences settings;
     AsyncTaskCancelTimerTask timerTask;
     AsyncTask task;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        checkLocationPermission();
-    }
 
     @Nullable
     @Override
@@ -113,14 +118,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
         location = locationManager.getLastKnownLocation(provider);
 
+
         arrayPoints = new ArrayList<LatLng>();
 
         dbController = new DatabaseGPSController(view.getContext());
-
+        dbController2 = new DatabasePhoneController(view.getContext());
         try {
             db = dbController.getWritableDatabase();
+            db2 = dbController2.getWritableDatabase();
         } catch (SQLiteException e) {
             db = dbController.getReadableDatabase();
+            db2 = dbController2.getReadableDatabase();
         }
         return view;
     }
@@ -172,7 +180,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     protected void Update() {
         Runnable updater = new Runnable() {
             public void run() {
-                if (settings.getBoolean("IdentifyActivity", true)) {
+                location=mMap.getMyLocation();
+                if (settings.getBoolean("IdentifyActivity", true) && location!=null) {
                     if (latLng == null) {
                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         timerTask = new AsyncTaskCancelTimerTask(task, Integer.parseInt(settings.getString("timeRegister", "5000")), 1000, true);
@@ -186,7 +195,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                             if (latLng.equals(new LatLng(location.getLatitude(), location.getLongitude()))) {
                                 try {
                                     String query = "SELECT * FROM " + TABLE_NAME_PHONE + " WHERE name = '" + name + "';";
-                                    Cursor cursor = db.rawQuery(query, null);
+                                    Cursor cursor = db2.rawQuery(query, null);
                                     while (cursor.moveToNext()) {
                                         DatabasePhone database = new DatabasePhone();
                                         String name = cursor.getString(cursor.getColumnIndex("name"));
@@ -197,12 +206,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                         database.setPersonName(personName);
                                         database.setPersonPhone(personPhone);
 
-                                        Toast.makeText(getActivity(),personPhone+"",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), personPhone + "", Toast.LENGTH_SHORT).show();
                                         sendSMS(personPhone);
                                     }
                                     cursor.close();
                                 } catch (Exception e) {
-
+                                    Log.d("nnnn",e.getMessage());
                                 }
                             }
                         }
@@ -236,6 +245,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         alertDialog.setPositiveButton("Register", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dbController = new DatabaseGPSController(getContext());
+                try {
+                    db = dbController.getWritableDatabase();
+                } catch (SQLiteException e) {
+                    db = dbController.getReadableDatabase();
+                }
+
                 String value = editText.getText().toString();
                 Log.v(TAG, value);
                 db.execSQL("INSERT INTO " + TABLE_NAME_GPS + " VALUES (null, '" + name + "', '" + value + "', '" + latLng.toString() + "');");

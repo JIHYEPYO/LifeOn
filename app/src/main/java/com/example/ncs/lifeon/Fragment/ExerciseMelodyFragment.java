@@ -208,10 +208,11 @@ public class ExerciseMelodyFragment extends Fragment {
                     }
 
                     dialog.setMessage("Do you want to close this window ?");
-                    dialog.setCancelable(false);
+                    dialog.setCancelable(true);
                     dialog.setButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            r.stop();
                             dialog.dismiss();
                         }
                     });
@@ -235,4 +236,3 @@ public class ExerciseMelodyFragment extends Fragment {
         }
     };
 }
-
